@@ -55,6 +55,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 jobs:
   select-directories:
@@ -141,8 +142,9 @@ jobs:
           timeout_minutes: ${{ inputs.timeout_minutes }}
           base_branch: ${{ inputs.base_branch }}
           branch_prefix: claude/code-quality-
-          track_progress: true
-          prompt: |
+          max_turns: 35
+          allowed_tools: "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(${{ inputs.lint_command }}*)"
+          direct_prompt: |
             ${{ inputs.custom_prompt != '' && inputs.custom_prompt || format('
             # Code Quality Review
 
@@ -189,9 +191,6 @@ jobs:
             - Do not refactor working code just for style
             - If no issues found, report that and skip PR creation
             ', matrix.directory, inputs.review_checklist_path, inputs.lint_command, inputs.base_branch) }}
-          claude_args: |
-            --max-turns 35
-            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(${{ inputs.lint_command }}*)"
 
   report-completion:
     needs: [select-directories, review-directory]

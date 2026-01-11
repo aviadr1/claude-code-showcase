@@ -45,6 +45,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 jobs:
   docs-sync:
@@ -103,8 +104,9 @@ jobs:
           timeout_minutes: ${{ inputs.timeout_minutes }}
           base_branch: ${{ inputs.base_branch }}
           branch_prefix: claude/docs-sync-
-          track_progress: true
-          prompt: ${{ inputs.custom_prompt != '' && inputs.custom_prompt || '
+          max_turns: 30
+          allowed_tools: "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*)"
+          direct_prompt: ${{ inputs.custom_prompt != '' && inputs.custom_prompt || '
             # Documentation Sync
 
             You are running a documentation sync. Check the environment variables for context:
@@ -142,9 +144,6 @@ jobs:
             - ONLY update docs when they are incorrect or misleading
             - If no problems are found, report that and DO NOT create a PR
             ' }}
-          claude_args: |
-            --max-turns 30
-            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*)"
 
       - name: Report no changes
         if: steps.check-changes.outputs.has_changes == 'false'

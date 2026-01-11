@@ -26,6 +26,7 @@ permissions:
   contents: read
   pull-requests: write
   issues: read
+  id-token: write
 
 jobs:
   review:
@@ -74,8 +75,9 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           model: ${{ inputs.model }}
           timeout_minutes: ${{ inputs.timeout_minutes }}
-          track_progress: true
-          prompt: |
+          max_turns: 10
+          allowed_tools: "Read,Glob,Grep,Bash(git:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
+          direct_prompt: |
             ${{ inputs.review_prompt != '' && inputs.review_prompt || format('
             Review this Pull Request thoroughly.
 
@@ -90,6 +92,3 @@ jobs:
             3. If a .claude/agents/code-reviewer.md exists, use it as the review checklist
             4. Provide feedback organized by severity (Critical, Warning, Suggestion)
             ', steps.pr-info.outputs.base_ref) }}
-          claude_args: |
-            --max-turns 10
-            --allowedTools "Read,Glob,Grep,Bash(git:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*)"
