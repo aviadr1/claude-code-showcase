@@ -7,7 +7,7 @@ on:
         description: 'Claude model to use'
         required: false
         type: string
-        default: 'claude-sonnet-4-20250514'
+        default: 'opus'
       timeout_minutes:
         description: 'Timeout in minutes'
         required: false
