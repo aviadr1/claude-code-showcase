@@ -72,20 +72,23 @@ jobs:
           SOURCE_DIR="${{ inputs.source_dir }}"
           EXTENSIONS="${{ inputs.file_extensions }}"
 
-          # Build find pattern for extensions
-          FIND_PATTERN=""
+          # Find directories with matching files (excluding tests)
+          # Build ls pattern by converting ".ts .tsx" to "*.ts *.tsx"
+          LS_PATTERNS=""
           for ext in $EXTENSIONS; do
-            if [ -n "$FIND_PATTERN" ]; then
-              FIND_PATTERN="$FIND_PATTERN -o"
-            fi
-            FIND_PATTERN="$FIND_PATTERN -name '*$ext'"
+            LS_PATTERNS="$LS_PATTERNS *$ext"
           done
 
-          # Find directories with matching files (excluding tests)
-          DIRS=$(find "$SOURCE_DIR" -type d -exec sh -c "ls \"\$1\"/*${{ inputs.file_extensions }} 2>/dev/null | grep -v -E '\.(test|spec|stories)\.' | head -1" _ {} \; 2>/dev/null | \
-            xargs -I {} dirname {} 2>/dev/null | \
-            sort -u | \
-            shuf -n "$NUM_DIRS")
+          # Find directories containing files with any of the extensions
+          DIRS=$(find "$SOURCE_DIR" -type d 2>/dev/null | while read -r dir; do
+            # Check if directory has matching files (excluding test files)
+            for ext in $EXTENSIONS; do
+              if ls "$dir"/*"$ext" 2>/dev/null | grep -qvE '\.(test|spec|stories)\.'; then
+                echo "$dir"
+                break
+              fi
+            done
+          done | sort -u | shuf -n "$NUM_DIRS")
 
           if [ -z "$DIRS" ]; then
             echo "No suitable directories found"

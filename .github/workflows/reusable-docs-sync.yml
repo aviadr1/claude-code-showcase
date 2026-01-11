@@ -92,6 +92,11 @@ jobs:
       - name: Claude Documentation Sync
         if: steps.check-changes.outputs.has_changes == 'true'
         uses: anthropics/claude-code-action@beta
+        env:
+          SINCE_DATE: ${{ steps.check-changes.outputs.since_date }}
+          CHANGED_FILES: ${{ steps.check-changes.outputs.changed_files }}
+          DOCS_PATHS: ${{ inputs.docs_paths }}
+          BASE_BRANCH: ${{ inputs.base_branch }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           model: ${{ inputs.model }}
@@ -99,39 +104,35 @@ jobs:
           base_branch: ${{ inputs.base_branch }}
           branch_prefix: claude/docs-sync-
           track_progress: true
-          prompt: |
-            ${{ inputs.custom_prompt != '' && inputs.custom_prompt || format('
+          prompt: ${{ inputs.custom_prompt != '' && inputs.custom_prompt || '
             # Documentation Sync
 
-            You are running a documentation sync. Code has changed since {0}.
-
-            ## Changed Files
-            The following code files have been modified:
-            ```
-            {1}
-            ```
-
-            ## Documentation Paths to Check
-            {2}
+            You are running a documentation sync. Check the environment variables for context:
+            - SINCE_DATE: Date to check changes from
+            - CHANGED_FILES: List of modified code files
+            - DOCS_PATHS: Documentation paths to update
+            - BASE_BRANCH: Branch to create PRs against
 
             ## Your Tasks
 
-            1. **Analyze Changes**: Review the changed files to understand what functionality was added, modified, or removed.
+            1. **Read the changed files list** from the CHANGED_FILES environment variable
 
-            2. **Find Related Documentation**: Search for documentation that might be affected in the specified paths.
+            2. **Analyze Changes**: Review the changed files to understand what functionality was added, modified, or removed.
 
-            3. **Check for Actual Problems**: For each code change, determine if existing docs are now WRONG:
+            3. **Find Related Documentation**: Search for documentation in the paths specified by DOCS_PATHS.
+
+            4. **Check for Actual Problems**: For each code change, determine if existing docs are now WRONG:
                - Do code examples still work?
                - Are API signatures/types now incorrect?
                - Are prop interfaces outdated?
 
-            4. **Fix Only What is Broken**: If you find documentation that is actually wrong:
+            5. **Fix Only What is Broken**: If you find documentation that is actually wrong:
                - Fix incorrect code examples
                - Update wrong API signatures and types
                - Add docs ONLY for significant new features that have zero documentation
 
-            5. **Create a PR**: If you made any changes:
-               - Create a new branch from {3}
+            6. **Create a PR**: If you made any changes:
+               - Create a new branch from the BASE_BRANCH
                - Commit all documentation updates
                - Create a PR with a summary of what was fixed
 
@@ -140,7 +141,7 @@ jobs:
             - DO NOT add changelog-style entries
             - ONLY update docs when they are incorrect or misleading
             - If no problems are found, report that and DO NOT create a PR
-            ', steps.check-changes.outputs.since_date, steps.check-changes.outputs.changed_files, inputs.docs_paths, inputs.base_branch) }}
+            ' }}
           claude_args: |
             --max-turns 30
             --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*)"
