@@ -87,7 +87,7 @@ permissions:
 
 jobs:
   quality:
-    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-code-quality.yml@main
+    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-nodejs-code-quality.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -107,7 +107,7 @@ permissions:
 
 jobs:
   audit:
-    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-dependency-audit.yml@main
+    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-nodejs-dependency-audit.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
