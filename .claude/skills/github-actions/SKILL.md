@@ -1,6 +1,23 @@
 # GitHub Actions for Claude Code
 
-Showcase GitHub Actions workflows that integrate Claude Code into your CI/CD pipeline.
+Reusable GitHub Actions workflows that integrate Claude Code into your CI/CD pipeline.
+
+## How It Works
+
+These are **reusable workflows** (using GitHub's `workflow_call` trigger). You don't copy them—you **call them** from your own repository using a simple caller workflow:
+
+```yaml
+# In YOUR repository: .github/workflows/claude-pr-review.yml
+jobs:
+  review:
+    uses: aviadr1/claude-code-showcase/.github/workflows/showcase-pr-review.yml@main
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+**Quick setup:** Run `/setup-github-actions` in Claude Code to interactively create caller workflows.
+
+---
 
 ## Workflow Compatibility
 

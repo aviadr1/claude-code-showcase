@@ -843,9 +843,9 @@ Recent commits: !`git log --oneline -5`
 
 Automate code review, quality checks, and maintenance with Claude Code.
 
-### Showcase Workflows
+### Showcase Workflows (Reusable)
 
-This repository provides **showcase GitHub Actions workflows** that you can call from your own repositories. No need to copy workflow files—just reference them directly.
+This repository provides **reusable GitHub Actions workflows** that you can call from your own repositories using GitHub's `workflow_call` feature. No need to copy workflow files—just reference them directly.
 
 **Quick Setup:**
 ```yaml
@@ -879,9 +879,11 @@ jobs:
 
 ---
 
-### Local Workflows (Used in This Repository)
+### Local Workflows (Examples)
 
-**📄 Examples:**
+These are **caller workflows** used by this repository—examples of how to call the reusable showcase workflows above:
+
+**📄 Example caller workflows:**
 - [pr-claude-code-review.yml](.github/workflows/pr-claude-code-review.yml) - Auto PR review
 - [scheduled-claude-code-docs-sync.yml](.github/workflows/scheduled-claude-code-docs-sync.yml) - Monthly docs sync
 - [scheduled-claude-code-quality.yml](.github/workflows/scheduled-claude-code-quality.yml) - Weekly quality review
