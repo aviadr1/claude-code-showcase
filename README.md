@@ -93,6 +93,7 @@ This repository is also a **Claude Code plugin marketplace**. You can install in
 | `docs-sync` | Command | Documentation synchronization |
 | `skill-activation` | Hook | Intelligent skill suggestions |
 | `plugin-marketplace` | Skill | Create marketplaces using symlinks |
+| `github-actions` | Bundle | Showcase Claude Code workflows + `/setup-github-actions` |
 
 ### Architecture
 
@@ -842,7 +843,47 @@ Recent commits: !`git log --oneline -5`
 
 Automate code review, quality checks, and maintenance with Claude Code.
 
-**📄 Examples:**
+### Showcase Workflows (Reusable)
+
+This repository provides **reusable GitHub Actions workflows** that you can call from your own repositories using GitHub's `workflow_call` feature. No need to copy workflow files—just reference them directly.
+
+**Quick Setup:**
+```yaml
+# In your repository's .github/workflows/claude-pr-review.yml
+name: Claude PR Review
+
+on:
+  pull_request:
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    uses: aviadr1/claude-code-showcase/.github/workflows/showcase-pr-review.yml@main
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+**Available Showcase Workflows:**
+
+| Workflow | Stack | Purpose | Key Inputs |
+|----------|-------|---------|------------|
+| [`showcase-pr-review.yml`](.github/workflows/showcase-pr-review.yml) | **Any** | Automatic PR review | `model`, `timeout_minutes`, `review_prompt` |
+| [`showcase-docs-sync.yml`](.github/workflows/showcase-docs-sync.yml) | **Any** | Keep docs in sync with code | `days_back`, `docs_paths`, `code_patterns` |
+| [`showcase-nodejs-code-quality.yml`](.github/workflows/showcase-nodejs-code-quality.yml) | **Node.js** | Periodic code quality audits | `num_dirs`, `source_dir`, `lint_command` |
+| [`showcase-nodejs-dependency-audit.yml`](.github/workflows/showcase-nodejs-dependency-audit.yml) | **Node.js** | Dependency updates & security | `node_version`, `lint_command`, `test_command` |
+
+**📄 Full documentation:** [github-actions skill](.claude/skills/github-actions/SKILL.md)
+
+**🛠️ Interactive setup:** Run `/setup-github-actions` in Claude Code
+
+---
+
+### Local Workflows (Examples)
+
+These are **caller workflows** used by this repository—examples of how to call the reusable showcase workflows above:
+
+**📄 Example caller workflows:**
 - [pr-claude-code-review.yml](.github/workflows/pr-claude-code-review.yml) - Auto PR review
 - [scheduled-claude-code-docs-sync.yml](.github/workflows/scheduled-claude-code-docs-sync.yml) - Monthly docs sync
 - [scheduled-claude-code-quality.yml](.github/workflows/scheduled-claude-code-quality.yml) - Weekly quality review
