@@ -1,4 +1,4 @@
-name: Reusable - Claude PR Review
+name: Showcase - Claude PR Review
 
 on:
   workflow_call:

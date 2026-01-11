@@ -93,7 +93,7 @@
     {
       "name": "github-actions",
       "source": "./plugins/github-actions",
-      "description": "Reusable GitHub Actions workflows for Claude Code CI/CD automation.",
+      "description": "Showcase GitHub Actions workflows for Claude Code CI/CD automation.",
       "version": "1.0.0",
       "keywords": ["github-actions", "ci-cd", "workflows", "automation", "pr-review"]
     }

@@ -1,4 +1,4 @@
-name: Reusable - Claude Documentation Sync
+name: Showcase - Claude Documentation Sync
 
 on:
   workflow_call:

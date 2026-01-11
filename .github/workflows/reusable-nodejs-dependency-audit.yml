@@ -1,4 +1,4 @@
-name: Reusable - Node.js Dependency Audit
+name: Showcase - Node.js Dependency Audit
 
 on:
   workflow_call:

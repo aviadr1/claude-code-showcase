@@ -1,4 +1,4 @@
-name: Reusable - Node.js Code Quality Review
+name: Showcase - Node.js Code Quality Review
 
 on:
   workflow_call:

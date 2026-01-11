@@ -1,6 +1,6 @@
 # GitHub Actions for Claude Code
 
-Reusable GitHub Actions workflows that integrate Claude Code into your CI/CD pipeline.
+Showcase GitHub Actions workflows that integrate Claude Code into your CI/CD pipeline.
 
 ## Workflow Compatibility
 

@@ -93,7 +93,7 @@ This repository is also a **Claude Code plugin marketplace**. You can install in
 | `docs-sync` | Command | Documentation synchronization |
 | `skill-activation` | Hook | Intelligent skill suggestions |
 | `plugin-marketplace` | Skill | Create marketplaces using symlinks |
-| `github-actions` | Bundle | Reusable Claude Code workflows + `/setup-github-actions` |
+| `github-actions` | Bundle | Showcase Claude Code workflows + `/setup-github-actions` |
 
 ### Architecture
 
@@ -843,9 +843,9 @@ Recent commits: !`git log --oneline -5`
 
 Automate code review, quality checks, and maintenance with Claude Code.
 
-### Reusable Workflows
+### Showcase Workflows
 
-This repository provides **reusable GitHub Actions workflows** that you can call from your own repositories. No need to copy workflow files—just reference them directly.
+This repository provides **showcase GitHub Actions workflows** that you can call from your own repositories. No need to copy workflow files—just reference them directly.
 
 **Quick Setup:**
 ```yaml
@@ -864,7 +864,7 @@ jobs:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
 
-**Available Reusable Workflows:**
+**Available Showcase Workflows:**
 
 | Workflow | Stack | Purpose | Key Inputs |
 |----------|-------|---------|------------|
