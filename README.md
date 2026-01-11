@@ -93,6 +93,7 @@ This repository is also a **Claude Code plugin marketplace**. You can install in
 | `docs-sync` | Command | Documentation synchronization |
 | `skill-activation` | Hook | Intelligent skill suggestions |
 | `plugin-marketplace` | Skill | Create marketplaces using symlinks |
+| `github-actions` | Bundle | Reusable Claude Code workflows + `/setup-github-actions` |
 
 ### Architecture
 
@@ -841,6 +842,44 @@ Recent commits: !`git log --oneline -5`
 ## GitHub Actions Workflows
 
 Automate code review, quality checks, and maintenance with Claude Code.
+
+### Reusable Workflows
+
+This repository provides **reusable GitHub Actions workflows** that you can call from your own repositories. No need to copy workflow files—just reference them directly.
+
+**Quick Setup:**
+```yaml
+# In your repository's .github/workflows/claude-pr-review.yml
+name: Claude PR Review
+
+on:
+  pull_request:
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-pr-review.yml@main
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+**Available Reusable Workflows:**
+
+| Workflow | Purpose | Key Inputs |
+|----------|---------|------------|
+| [`reusable-pr-review.yml`](.github/workflows/reusable-pr-review.yml) | Automatic PR review | `model`, `timeout_minutes`, `review_prompt` |
+| [`reusable-docs-sync.yml`](.github/workflows/reusable-docs-sync.yml) | Keep docs in sync with code | `days_back`, `docs_paths`, `code_patterns` |
+| [`reusable-code-quality.yml`](.github/workflows/reusable-code-quality.yml) | Periodic code quality audits | `num_dirs`, `source_dir`, `lint_command` |
+| [`reusable-dependency-audit.yml`](.github/workflows/reusable-dependency-audit.yml) | Dependency updates & security | `node_version`, `lint_command`, `test_command` |
+
+**📄 Full documentation:** [github-actions skill](.claude/skills/github-actions/SKILL.md)
+
+**🛠️ Interactive setup:** Run `/setup-github-actions` in Claude Code
+
+---
+
+### Local Workflows (Used in This Repository)
 
 **📄 Examples:**
 - [pr-claude-code-review.yml](.github/workflows/pr-claude-code-review.yml) - Auto PR review

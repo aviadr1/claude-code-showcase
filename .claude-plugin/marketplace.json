@@ -89,6 +89,13 @@
       "description": "Create a Claude Code plugin marketplace from existing components using symlinks.",
       "version": "1.0.0",
       "keywords": ["marketplace", "plugins", "symlinks", "distribution"]
+    },
+    {
+      "name": "github-actions",
+      "source": "./plugins/github-actions",
+      "description": "Reusable GitHub Actions workflows for Claude Code CI/CD automation.",
+      "version": "1.0.0",
+      "keywords": ["github-actions", "ci-cd", "workflows", "automation", "pr-review"]
     }
   ]
 }

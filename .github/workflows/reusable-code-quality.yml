@@ -1,0 +1,207 @@
+name: Reusable - Claude Code Quality Review
+
+on:
+  workflow_call:
+    inputs:
+      model:
+        description: 'Claude model to use'
+        required: false
+        type: string
+        default: 'claude-opus-4-5-20251101'
+      timeout_minutes:
+        description: 'Timeout in minutes per directory'
+        required: false
+        type: number
+        default: 45
+      num_dirs:
+        description: 'Number of random directories to review'
+        required: false
+        type: number
+        default: 3
+      source_dir:
+        description: 'Source directory to search for code'
+        required: false
+        type: string
+        default: 'src'
+      base_branch:
+        description: 'Base branch for PRs'
+        required: false
+        type: string
+        default: 'main'
+      file_extensions:
+        description: 'File extensions to review (space-separated)'
+        required: false
+        type: string
+        default: '.ts .tsx'
+      lint_command:
+        description: 'Lint command to verify changes'
+        required: false
+        type: string
+        default: 'npm run lint'
+      review_checklist_path:
+        description: 'Path to code review checklist (optional)'
+        required: false
+        type: string
+        default: '.claude/agents/code-reviewer.md'
+      custom_prompt:
+        description: 'Custom review prompt (optional)'
+        required: false
+        type: string
+        default: ''
+    secrets:
+      ANTHROPIC_API_KEY:
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  select-directories:
+    runs-on: ubuntu-latest
+    outputs:
+      directories: ${{ steps.select.outputs.directories }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select random directories
+        id: select
+        run: |
+          NUM_DIRS="${{ inputs.num_dirs }}"
+          SOURCE_DIR="${{ inputs.source_dir }}"
+          EXTENSIONS="${{ inputs.file_extensions }}"
+
+          # Build find pattern for extensions
+          FIND_PATTERN=""
+          for ext in $EXTENSIONS; do
+            if [ -n "$FIND_PATTERN" ]; then
+              FIND_PATTERN="$FIND_PATTERN -o"
+            fi
+            FIND_PATTERN="$FIND_PATTERN -name '*$ext'"
+          done
+
+          # Find directories with matching files (excluding tests)
+          DIRS=$(find "$SOURCE_DIR" -type d -exec sh -c "ls \"\$1\"/*${{ inputs.file_extensions }} 2>/dev/null | grep -v -E '\.(test|spec|stories)\.' | head -1" _ {} \; 2>/dev/null | \
+            xargs -I {} dirname {} 2>/dev/null | \
+            sort -u | \
+            shuf -n "$NUM_DIRS")
+
+          if [ -z "$DIRS" ]; then
+            echo "No suitable directories found"
+            echo "directories=[]" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Convert to JSON array
+          JSON_DIRS=$(echo "$DIRS" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "directories=$JSON_DIRS" >> $GITHUB_OUTPUT
+          echo "Selected directories:"
+          echo "$DIRS"
+
+  review-directory:
+    needs: select-directories
+    if: needs.select-directories.outputs.directories != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        directory: ${{ fromJson(needs.select-directories.outputs.directories) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate branch name
+        id: branch
+        run: |
+          DIR_SLUG=$(echo "${{ matrix.directory }}" | sed 's/[^a-zA-Z0-9]/-/g' | sed 's/--*/-/g' | sed 's/^-//' | sed 's/-$//' | cut -c1-30)
+          BRANCH_NAME="claude/code-quality-${DIR_SLUG}-$(date +%Y%m%d)"
+          echo "name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: Claude Code Quality Review
+        uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          model: ${{ inputs.model }}
+          timeout_minutes: ${{ inputs.timeout_minutes }}
+          base_branch: ${{ inputs.base_branch }}
+          branch_prefix: claude/code-quality-
+          track_progress: true
+          prompt: |
+            ${{ inputs.custom_prompt != '' && inputs.custom_prompt || format('
+            # Code Quality Review
+
+            You are performing a code quality review of a specific directory.
+
+            ## Target Directory
+            **Review: `{0}`**
+
+            ## Your Tasks
+
+            1. **Read the code review standards**: If `{1}` exists, read it for the full checklist
+
+            2. **Analyze all files in the directory**:
+               - List all code files (excluding .test., .spec., .stories.)
+               - Read each file thoroughly
+               - Apply the review checklist
+
+            3. **Focus on finding and FIXING issues**:
+               - TypeScript strict mode violations (any types, missing types)
+               - React anti-patterns (bad useEffect, unnecessary memoization)
+               - Code style issues (mutations, deep nesting, poor naming)
+               - Missing error handling
+               - Security issues
+               - Performance problems
+
+            4. **Make the fixes yourself**:
+               - Do not just report issues - FIX THEM
+               - Use Edit tool to update files
+               - Ensure fixes do not break anything
+
+            5. **Run verification**:
+               - Run `{2}` - verify no lint errors introduced
+               - If errors occur, fix them or revert changes
+
+            6. **Create PR if fixes were made**:
+               - Create a branch from {3}
+               - Commit all fixes with descriptive message
+               - PR title: "fix({0}): code quality improvements"
+               - PR body should list fixes applied
+
+            ## Guidelines
+            - Be thorough but focused on this directory only
+            - Fix issues that are clear improvements
+            - Do not refactor working code just for style
+            - If no issues found, report that and skip PR creation
+            ', matrix.directory, inputs.review_checklist_path, inputs.lint_command, inputs.base_branch) }}
+          claude_args: |
+            --max-turns 35
+            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(${{ inputs.lint_command }}*)"
+
+  report-completion:
+    needs: [select-directories, review-directory]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          echo "## Code Quality Review Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Reviewed directories:" >> $GITHUB_STEP_SUMMARY
+          echo '${{ needs.select-directories.outputs.directories }}' | jq -r '.[]' | while read dir; do
+            echo "- \`$dir\`" >> $GITHUB_STEP_SUMMARY
+          done
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check for any PRs created by this workflow." >> $GITHUB_STEP_SUMMARY
