@@ -13,6 +13,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
 
 jobs:
   dependency-audit:
@@ -70,8 +71,9 @@ jobs:
           timeout_minutes: 45
           base_branch: main
           branch_prefix: claude/deps-update-
-          track_progress: true
-          prompt: |
+          max_turns: 40
+          allowed_tools: "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(npm:*)"
+          direct_prompt: |
             # Dependency Audit
 
             You are running a scheduled dependency audit.
@@ -105,9 +107,6 @@ jobs:
             - If tests fail after an update, revert that update
             - Group related updates together
             - If NO updates are possible, report that and don't create a PR
-          claude_args: |
-            --max-turns 40
-            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(gh:*),Bash(npm:*)"
 
       - name: Report no updates needed
         if: steps.check-outdated.outputs.has_outdated == 'false' && steps.security-audit.outputs.vulnerabilities == '0'
