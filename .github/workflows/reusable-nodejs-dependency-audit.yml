@@ -1,4 +1,4 @@
-name: Reusable - Claude Dependency Audit
+name: Reusable - Node.js Dependency Audit
 
 on:
   workflow_call:

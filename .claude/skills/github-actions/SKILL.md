@@ -101,7 +101,7 @@ jobs:
 
 ## Node.js Workflows
 
-### 3. Code Quality Review (`reusable-code-quality.yml`)
+### 3. Code Quality Review (`reusable-nodejs-code-quality.yml`)
 
 **Stack: Node.js** - Requires `npm` and a `package.json` with lint scripts.
 
@@ -122,7 +122,7 @@ on:
 
 jobs:
   quality:
-    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-code-quality.yml@main
+    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-nodejs-code-quality.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     with:
@@ -147,7 +147,7 @@ jobs:
 
 ---
 
-### 4. Dependency Audit (`reusable-dependency-audit.yml`)
+### 4. Dependency Audit (`reusable-nodejs-dependency-audit.yml`)
 
 **Stack: Node.js** - Requires `npm` for dependency management.
 
@@ -168,7 +168,7 @@ on:
 
 jobs:
   audit:
-    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-dependency-audit.yml@main
+    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-nodejs-dependency-audit.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
     with:
@@ -198,7 +198,7 @@ The Node.js workflows can be adapted for Python. Here's a guide:
 
 **Code Quality (Python adaptation):**
 ```yaml
-# Create your own workflow based on reusable-code-quality.yml
+# Create your own workflow based on reusable-nodejs-code-quality.yml
 # Replace npm steps with:
 - name: Setup Python
   uses: actions/setup-python@v5

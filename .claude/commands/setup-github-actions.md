@@ -9,19 +9,21 @@ Help the user set up reusable Claude Code GitHub Actions workflows in their repo
 
 ## Available Workflows
 
-1. **PR Review** - Automatically review pull requests with Claude
-2. **Documentation Sync** - Keep docs in sync with code changes
-3. **Code Quality Review** - Periodic code quality audits
-4. **Dependency Audit** - Check for outdated/vulnerable dependencies
+| Workflow | Stack | Description |
+|----------|-------|-------------|
+| **PR Review** | Any | Automatically review pull requests with Claude |
+| **Documentation Sync** | Any | Keep docs in sync with code changes |
+| **Node.js Code Quality** | Node.js | Periodic code quality audits (requires npm) |
+| **Node.js Dependency Audit** | Node.js | Check for outdated/vulnerable dependencies (requires npm) |
 
 ## Your Tasks
 
 1. **Ask which workflows to set up:**
    Use AskUserQuestion to ask which workflows they want:
-   - PR Review (recommended for all projects)
-   - Documentation Sync
-   - Code Quality Review
-   - Dependency Audit
+   - PR Review (recommended for all projects, works with any language)
+   - Documentation Sync (works with any language)
+   - Node.js Code Quality (Node.js projects only)
+   - Node.js Dependency Audit (Node.js projects only)
 
 2. **Check prerequisites:**
    - Verify `.github/workflows/` directory exists (create if needed)

@@ -1,4 +1,4 @@
-name: Reusable - Claude Code Quality Review
+name: Reusable - Node.js Code Quality Review
 
 on:
   workflow_call:
