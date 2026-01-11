@@ -866,12 +866,12 @@ jobs:
 
 **Available Reusable Workflows:**
 
-| Workflow | Purpose | Key Inputs |
-|----------|---------|------------|
-| [`reusable-pr-review.yml`](.github/workflows/reusable-pr-review.yml) | Automatic PR review | `model`, `timeout_minutes`, `review_prompt` |
-| [`reusable-docs-sync.yml`](.github/workflows/reusable-docs-sync.yml) | Keep docs in sync with code | `days_back`, `docs_paths`, `code_patterns` |
-| [`reusable-code-quality.yml`](.github/workflows/reusable-code-quality.yml) | Periodic code quality audits | `num_dirs`, `source_dir`, `lint_command` |
-| [`reusable-dependency-audit.yml`](.github/workflows/reusable-dependency-audit.yml) | Dependency updates & security | `node_version`, `lint_command`, `test_command` |
+| Workflow | Stack | Purpose | Key Inputs |
+|----------|-------|---------|------------|
+| [`reusable-pr-review.yml`](.github/workflows/reusable-pr-review.yml) | **Any** | Automatic PR review | `model`, `timeout_minutes`, `review_prompt` |
+| [`reusable-docs-sync.yml`](.github/workflows/reusable-docs-sync.yml) | **Any** | Keep docs in sync with code | `days_back`, `docs_paths`, `code_patterns` |
+| [`reusable-code-quality.yml`](.github/workflows/reusable-code-quality.yml) | **Node.js** | Periodic code quality audits | `num_dirs`, `source_dir`, `lint_command` |
+| [`reusable-dependency-audit.yml`](.github/workflows/reusable-dependency-audit.yml) | **Node.js** | Dependency updates & security | `node_version`, `lint_command`, `test_command` |
 
 **📄 Full documentation:** [github-actions skill](.claude/skills/github-actions/SKILL.md)
 
