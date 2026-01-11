@@ -47,7 +47,7 @@ permissions:
 
 jobs:
   review:
-    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-pr-review.yml@main
+    uses: aviadr1/claude-code-showcase/.github/workflows/showcase-pr-review.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -67,7 +67,7 @@ permissions:
 
 jobs:
   sync:
-    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-docs-sync.yml@main
+    uses: aviadr1/claude-code-showcase/.github/workflows/showcase-docs-sync.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -87,7 +87,7 @@ permissions:
 
 jobs:
   quality:
-    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-nodejs-code-quality.yml@main
+    uses: aviadr1/claude-code-showcase/.github/workflows/showcase-nodejs-code-quality.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -107,7 +107,7 @@ permissions:
 
 jobs:
   audit:
-    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-nodejs-dependency-audit.yml@main
+    uses: aviadr1/claude-code-showcase/.github/workflows/showcase-nodejs-dependency-audit.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```

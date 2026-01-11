@@ -859,7 +859,7 @@ on:
 
 jobs:
   review:
-    uses: aviadr1/claude-code-showcase/.github/workflows/reusable-pr-review.yml@main
+    uses: aviadr1/claude-code-showcase/.github/workflows/showcase-pr-review.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
 ```
@@ -868,10 +868,10 @@ jobs:
 
 | Workflow | Stack | Purpose | Key Inputs |
 |----------|-------|---------|------------|
-| [`reusable-pr-review.yml`](.github/workflows/reusable-pr-review.yml) | **Any** | Automatic PR review | `model`, `timeout_minutes`, `review_prompt` |
-| [`reusable-docs-sync.yml`](.github/workflows/reusable-docs-sync.yml) | **Any** | Keep docs in sync with code | `days_back`, `docs_paths`, `code_patterns` |
-| [`reusable-nodejs-code-quality.yml`](.github/workflows/reusable-nodejs-code-quality.yml) | **Node.js** | Periodic code quality audits | `num_dirs`, `source_dir`, `lint_command` |
-| [`reusable-nodejs-dependency-audit.yml`](.github/workflows/reusable-nodejs-dependency-audit.yml) | **Node.js** | Dependency updates & security | `node_version`, `lint_command`, `test_command` |
+| [`showcase-pr-review.yml`](.github/workflows/showcase-pr-review.yml) | **Any** | Automatic PR review | `model`, `timeout_minutes`, `review_prompt` |
+| [`showcase-docs-sync.yml`](.github/workflows/showcase-docs-sync.yml) | **Any** | Keep docs in sync with code | `days_back`, `docs_paths`, `code_patterns` |
+| [`showcase-nodejs-code-quality.yml`](.github/workflows/showcase-nodejs-code-quality.yml) | **Node.js** | Periodic code quality audits | `num_dirs`, `source_dir`, `lint_command` |
+| [`showcase-nodejs-dependency-audit.yml`](.github/workflows/showcase-nodejs-dependency-audit.yml) | **Node.js** | Dependency updates & security | `node_version`, `lint_command`, `test_command` |
 
 **📄 Full documentation:** [github-actions skill](.claude/skills/github-actions/SKILL.md)
 
