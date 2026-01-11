@@ -5,7 +5,7 @@ allowed-tools: Read, Write, Bash(mkdir:*), Bash(ls:*), AskUserQuestion
 
 # Setup GitHub Actions for Claude Code
 
-Help the user set up reusable Claude Code GitHub Actions workflows in their repository.
+Help the user set up showcase Claude Code GitHub Actions workflows in their repository.
 
 ## Available Workflows
 
